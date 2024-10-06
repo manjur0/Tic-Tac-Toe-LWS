@@ -15,9 +15,7 @@ const Square = ({ value, onSquareClick }) => {
 };
 
 //  board component
-const Board = () => {
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  const [xIsNext, setXisNext] = useState(true);
+export const Board = ({ xIsNext, squares, onPlay }) => {
   // winner functionality
   const winner = calculateWinner(squares);
   let status;
@@ -41,8 +39,7 @@ const Board = () => {
     } else {
       nextSquare[i] = "O";
     }
-    setSquares(nextSquare);
-    setXisNext(!xIsNext);
+    onPlay(nextSquare);
   };
 
   return (
@@ -67,7 +64,41 @@ const Board = () => {
   );
 };
 
-export default Board;
+// Game Main Component
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [xIsNext, setXisNext] = useState(true);
+  const currentSquare = history[history.length - 1];
+
+  function handlePlay(nextSquare) {
+    setXisNext(!xIsNext);
+    setHistory([...history, nextSquare]);
+    console.log(nextSquare);
+  }
+
+  const moves = history.map((square, moveIdx) => {
+    let description;
+    if (moveIdx > 0) {
+      description = `Go To Move #${moveIdx}`;
+    } else {
+      description = "Start The Game ";
+    }
+
+    return (
+      <h3 className="text-left font-semibold " key={square}>
+        <button>{description}</button>
+      </h3>
+    );
+  });
+  return (
+    <div className="flex justify-center gap-4 mt-10 mx-auto text-center">
+      <div>
+        <Board xIsNext={xIsNext} squares={currentSquare} onPlay={handlePlay} />
+      </div>
+      <div>{moves}</div>
+    </div>
+  );
+}
 
 // winner utility function
 function calculateWinner(squares) {
