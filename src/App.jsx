@@ -6,7 +6,7 @@ const Square = ({ value, onSquareClick }) => {
     <>
       <button
         onClick={onSquareClick}
-        className="bg-white border border-gray-300 rounded-md w-12 h-12 m-1 leading-9 text-lg "
+        className="bg-white shadow-md font-bold border border-gray-400 rounded-md w-12 h-12 m-1 leading-9 text-lg "
       >
         {value}
       </button>
@@ -17,12 +17,24 @@ const Square = ({ value, onSquareClick }) => {
 //  board component
 const Board = () => {
   const [squares, setSquares] = useState(Array(9).fill(null));
-  console.log(squares);
+  const [xIsNext, setXisNext] = useState(true);
 
+  // square value updater function
   const handleClick = (i) => {
+    // toggle validation
+    if (squares[i]) {
+      return;
+    }
+
     const nextSquare = squares.slice();
-    nextSquare[i] = "X";
+    // next value functionality
+    if (xIsNext) {
+      nextSquare[i] = "X";
+    } else {
+      nextSquare[i] = "O";
+    }
     setSquares(nextSquare);
+    setXisNext(!xIsNext);
   };
 
   return (
