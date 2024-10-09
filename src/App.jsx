@@ -15,7 +15,7 @@ const Square = ({ value, onSquareClick }) => {
 };
 
 //  board component
-export const Board = ({ xIsNext, squares, onPlay }) => {
+export const Board = ({ xIsNext, squares, onPlay, resetAllSquares }) => {
   // winner functionality
   const winner = calculateWinner(squares);
   let status;
@@ -60,6 +60,12 @@ export const Board = ({ xIsNext, squares, onPlay }) => {
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
+      <button
+        className="bg-blue-500 text-white px-4 py-1 mt-4 rounded-md"
+        onClick={resetAllSquares}
+      >
+        Reset
+      </button>
     </>
   );
 };
@@ -71,11 +77,13 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const currentSquare = history[currentMove];
 
+  // jump to functionality
   function jumpTo(move) {
     setCurrentMove(move);
     setXisNext(move % 2 === 0);
   }
 
+  // handle play functionality
   function handlePlay(nextSquare) {
     setXisNext(!xIsNext);
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquare];
@@ -97,10 +105,23 @@ export default function Game() {
       </h3>
     );
   });
+  
+  // Reset All Squares
+  const resetAllSquares = () => {
+    setHistory([Array(9).fill(null)]);
+    setCurrentMove(0);
+    setXisNext(true);
+  };
+
   return (
     <div className="flex justify-center gap-4 mt-10 mx-auto text-center">
       <div>
-        <Board xIsNext={xIsNext} squares={currentSquare} onPlay={handlePlay} />
+        <Board
+          resetAllSquares={resetAllSquares}
+          xIsNext={xIsNext}
+          squares={currentSquare}
+          onPlay={handlePlay}
+        />
       </div>
       <div>{moves}</div>
     </div>
